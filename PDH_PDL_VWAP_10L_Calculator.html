@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>10L Risk Calculator</title>
+<style>
+body{font-family:Arial;max-width:700px;margin:auto;padding:20px}
+input,button{width:100%;padding:10px;margin:6px 0}
+.box{border:1px solid #ccc;padding:12px;margin-top:10px}
+</style></head><body>
+<h2>PDH-PDL-VWAP Trading Calculator</h2>
+<p>Fixed Account Size: ₹10,00,000 | Risk per Trade: 1% (₹10,000)</p>
+
+<input id="pdh" type="number" placeholder="PDH">
+<input id="pdl" type="number" placeholder="PDL">
+<input id="vwap" type="number" placeholder="VWAP">
+<input id="price" type="number" placeholder="Current Price">
+
+<button onclick="calc()">Calculate</button>
+
+<div id="out" class="box"></div>
+
+<script>
+function calc(){
+let H=+pdh.value,L=+pdl.value,V=+vwap.value,P=+price.value;
+if(!H||!L||!V||!P){out.innerHTML="Enter all values";return;}
+
+const account=1000000;
+const allowedRisk=10000;
+
+let bias="NO TRADE",entry=0,sl=0,t1=0,t2=0;
+
+if(V>H){
+ bias="BULLISH";
+ entry=P;
+ sl=V;
+}
+else if(V<L){
+ bias="BEARISH";
+ entry=P;
+ sl=V;
+}
+else{
+ out.innerHTML="<b>NO TRADE ZONE</b>";
+ return;
+}
+
+let risk=Math.abs(entry-sl);
+let qtyRisk = risk>0 ? Math.floor(allowedRisk/risk) : 0;
+let qtyCapital = Math.floor(account/entry);
+let finalQty = Math.min(qtyRisk, qtyCapital);
+
+t1 = bias==="BULLISH" ? Math.round(entry+risk*2) : Math.round(entry-risk*2);
+t2 = bias==="BULLISH" ? Math.round(entry+risk*3) : Math.round(entry-risk*3);
+
+out.innerHTML=`
+<b>${bias}</b><br><br>
+Entry: ₹${entry}<br>
+SL (VWAP): ₹${sl}<br>
+Risk/Share: ₹${risk}<br><br>
+
+Account Size: ₹10,00,000<br>
+Allowed Risk: ₹10,000<br>
+Risk-Based Qty: ${qtyRisk}<br>
+Capital-Based Qty: ${qtyCapital}<br>
+<b>Final Quantity: ${finalQty}</b><br>
+Position Value: ₹${Math.round(finalQty*entry)}<br><br>
+
+T1: ₹${t1}<br>
+T2: ₹${t2}<br><br>
+
+Trailing SL:<br>
+T1 Hit → SL to Entry<br>
+T2 Hit → SL to T1
+`;
+}
+</script></body></html>
