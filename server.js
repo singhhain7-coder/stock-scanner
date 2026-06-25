@@ -1,8 +1,6 @@
 const express = require("express");
-const cors = require("cors");
 
 const app = express();
-app.use(cors());
 
 app.get("/", (req, res) => {
   res.send("Stock Scanner API Running");
@@ -10,6 +8,12 @@ app.get("/", (req, res) => {
 
 app.get("/auth/callback", (req, res) => {
   res.send("AliceBlue Connected Successfully");
+});
+
+app.get("/scanner", (req, res) => {
+  res.json({
+    status: "ok"
+  });
 });
 
 const PORT = process.env.PORT || 10000;
