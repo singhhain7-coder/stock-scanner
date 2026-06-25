@@ -12,7 +12,8 @@ app.get("/auth/callback", (req, res) => {
 
 app.get("/scanner", (req, res) => {
   res.json({
-    status: "ok"
+    status: "ok",
+    message: "Scanner Working"
   });
 });
 
